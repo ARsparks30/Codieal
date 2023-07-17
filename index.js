@@ -6,10 +6,10 @@ const cookieParser = require("cookie-parser");
 const db = require("./config/mongoose");
 
 app.use(express.urlencoded());
+app.use(cookieParser());
 app.use(expresLayouts);
 app.use("/", require("./routes"));
 app.use(express.static("./assets"));
-app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", "./views");
 

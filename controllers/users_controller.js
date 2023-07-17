@@ -2,22 +2,44 @@ const User = require("../models/user");
 
 module.exports.profile = function (req, res) {
   //   res.end("<h1> User Profile </h1>");
+
+  // console.log(req.cookies.JSESSIONID);
+
   if (req.cookies.user_id) {
-    User.findById(req.cookies.user_id, function (err, user) {
-      if (err) {
-        console.log("error in profile");
+    User.findById(req.cookies.user_id)
+      .then((user) => {
+        if (user) {
+          return res.render("user_profile", {
+            title: "User profile",
+            users: user,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("error in profile", err);
         return;
-      }
-      if (user) {
-        return res.render("user-profile", {
-          title: "User profile",
-          user: User,
-        });
-      }
-    });
+      });
   } else {
     return res.redirect("/users/sign-in");
   }
+  // return res.render("user_profile", { title: "User Profile" });
+
+  // if (req.cookies.user_id) {
+  //   User.findById(req.cookies.user_id, function (err, user) {
+  //     if (err) {
+  //       console.log("error in profile");
+  //       return;
+  //     }
+  //     if (user) {
+  //       return res.render("user-profile", {
+  //         title: "User profile",
+  //         user: User,
+  //       });
+  //     }
+  //   });
+  // } else {
+  //   return res.redirect("/users/sign-in");
+  // }
   // return res.render("user_profile", { title: "User Profile" });
 };
 
