@@ -1,29 +1,40 @@
 const User = require("../models/user");
 
 module.exports.profile = function (req, res) {
-  //   res.end("<h1> User Profile </h1>");
-
-  // console.log(req.cookies.JSESSIONID);
-
-  if (req.cookies.user_id) {
-    User.findById(req.cookies.user_id)
-      .then((user) => {
-        if (user) {
-          return res.render("user_profile", {
-            title: "User profile",
-            users: user,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("error in profile", err);
-        return;
+  // console.log(req.user._id);
+  User.findById(req.user._id)
+    .then((user) => {
+      return res.render("user_profile", {
+        title: "User profile",
+        users: user,
       });
-  } else {
-    return res.redirect("/users/sign-in");
-  }
+    })
+    .catch((err) => {
+      if (err) {
+        console.log("Error in profile", err);
+        return;
+      }
+    });
+  //   res.end("<h1> User Profile </h1>");
+  // console.log(req.cookies.JSESSIONID);
+  // if (req.cookies.user_id) {
+  //   User.findById(req.cookies.user_id)
+  //     .then((user) => {
+  //       if (user) {
+  //         return res.render("user_profile", {
+  //           title: "User profile",
+  //           users: user,
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log("error in profile", err);
+  //       return;
+  //     });
+  // } else {
+  //   return res.redirect("/users/sign-in");
+  // }
   // return res.render("user_profile", { title: "User Profile" });
-
   // if (req.cookies.user_id) {
   //   User.findById(req.cookies.user_id, function (err, user) {
   //     if (err) {
@@ -44,12 +55,18 @@ module.exports.profile = function (req, res) {
 };
 
 module.exports.signUp = function (req, res) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/users/profile");
+  }
   return res.render("user_sign_up", {
     title: "Codeial | Sign Up",
   });
 };
 
 module.exports.signIn = function (req, res) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/users/profile");
+  }
   return res.render("user_sign_in", { title: "Codeial | Sign In" });
 };
 
@@ -100,37 +117,41 @@ module.exports.create = function (req, res) {
     });
 };
 
+// module.exports.createSession = function (req, res) {
+//   User.findOne({ email: req.body.email })
+//     .then((user) => {
+//       if (user.password != req.body.password) {
+//         return res.redirect("back");
+//       }
+//       res.cookie("user_id", user.id);
+//       return res.redirect("back");
+//     })
+//     .catch((err) => {
+//       console.log("error in finding user", err);
+//       return;
+//     });
+
+//   // User.findOne(
+//   //   {
+//   //     email: req.body.email,
+//   //   },
+//   //   function (err, user) {
+//   //     if (err) {
+//   //       console.log("error in finding user");
+//   //       return;
+//   //     }
+//   //     if (user) {
+//   //       if (user.password != req.body.password) {
+//   //         return res.redirect("back");
+//   //       }
+
+//   //       res.cookie("user_id", user.id);
+//   //       return res.redirect;
+//   //     }
+//   //   }
+//   // );
+// };
+
 module.exports.createSession = function (req, res) {
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (user.password != req.body.password) {
-        return res.redirect("back");
-      }
-      res.cookie("user_id", user.id);
-      return res.redirect("back");
-    })
-    .catch((err) => {
-      console.log("error in finding user", err);
-      return;
-    });
-
-  // User.findOne(
-  //   {
-  //     email: req.body.email,
-  //   },
-  //   function (err, user) {
-  //     if (err) {
-  //       console.log("error in finding user");
-  //       return;
-  //     }
-  //     if (user) {
-  //       if (user.password != req.body.password) {
-  //         return res.redirect("back");
-  //       }
-
-  //       res.cookie("user_id", user.id);
-  //       return res.redirect;
-  //     }
-  //   }
-  // );
+  return res.redirect("/users/profile");
 };
