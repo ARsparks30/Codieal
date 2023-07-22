@@ -155,3 +155,14 @@ module.exports.create = function (req, res) {
 module.exports.createSession = function (req, res) {
   return res.redirect("/");
 };
+
+module.exports.destroySession = function (req, res) {
+  //passport gives this funtion in built
+  req.logout(function (err) {
+    if (err) {
+      console.log("Error in the user controller", err);
+      return;
+    }
+  });
+  return res.redirect("/");
+};
